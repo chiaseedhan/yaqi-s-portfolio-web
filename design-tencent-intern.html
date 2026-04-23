@@ -175,8 +175,38 @@
       .footer-star { width: 58px; }
       .pages-panel object { min-height: 820px; }
     }
+    .nav-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: auto;
+      font-size: 22px;
+      letter-spacing: 6px;
+      color: var(--pink);
+      padding: 8px 4px;
+      line-height: 1;
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(230, 228, 226, 0.97);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu-links { list-style: none; display: flex; flex-direction: column; align-items: center; gap: 40px; }
+    .mobile-menu-links a { text-decoration: none; color: var(--ink); font-size: 30px; letter-spacing: 0.72px; transition: color .2s; }
+    .mobile-menu-links a.active, .mobile-menu-links a:hover { color: var(--pink); }
+    .mobile-menu-close { position: absolute; top: 24px; right: 24px; background: none; border: none; cursor: pointer; font-size: 30px; color: var(--pink); line-height: 1; padding: 8px; }
     @media (max-width: 760px) {
       .nav-links { display: none; }
+      .nav-menu-btn { display: block; }
       .detail-layout { grid-template-columns: 1fr; }
       .sidebar { position: static; height: auto; padding: 24px 20px 0; }
       .pages-panel { padding: 20px 20px 60px; }
@@ -196,7 +226,18 @@
     <li><a href="illustration.html">Illustration</a></li>
     <li><a href="about.html">About</a></li>
   </ul>
+  <button class="nav-menu-btn" aria-label="Open menu" onclick="document.getElementById('mobileMenu').classList.add('open')">• • •</button>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" aria-label="Close menu" onclick="document.getElementById('mobileMenu').classList.remove('open')">✕</button>
+  <ul class="mobile-menu-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="publication.html">Publication</a></li>
+    <li><a href="design.html" class="active">Design</a></li>
+    <li><a href="illustration.html">Illustration</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+</div>
 <div class="detail-layout">
   <aside class="sidebar">
     <a class="back-link" href="design.html">← Design</a>
@@ -236,5 +277,13 @@
   <p class="footer-copy">Yaqi Han 2026 ©</p>
   <img class="footer-star footer-star-r" src="https://www.figma.com/api/mcp/asset/cdf2e201-448f-487b-8051-49a7ee6bdd62" alt="" />
 </footer>
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var m = document.getElementById('mobileMenu');
+        if (m) m.classList.remove('open');
+      }
+    });
+  </script>
 </body>
 </html>
