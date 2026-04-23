@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design — Yaqi Han</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --pink: #d30b76;
+      --blue: #1282fe;
+      --ink: #000;
+      --bg: #e6e4e2;
+      --ease: cubic-bezier(.4, 0, .2, 1);
+    }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Futura, "Avenir Next", "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img[src*="figma.com/api/mcp/asset"] { display: none !important; }
+
+    .page { width: min(100%, 1728px); margin: 0 auto; position: relative; }
+
+    nav {
+      height: 110px;
+      padding: 12px 40px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; right: 0; width: 100%;
+      z-index: 999;
+      background: rgba(230, 228, 226, 0.94);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    .nav-logo img { height: 85px; width: auto; display: block; }
+    .nav-links { margin-left: auto; list-style: none; display: flex; gap: 44px; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      transition: color .2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--pink); }
+
+    .page-content {
+      padding-top: 140px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .page-header { padding: 0 64px 56px; }
+    .page-header h1 {
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1;
+      color: var(--blue);
+    }
+
+    .works-grid {
+      padding: 0 64px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-bottom: 80px;
+      align-items: start;
+    }
+
+    .work-card {
+      display: block;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .work-thumb {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #d8d6d4;
+      aspect-ratio: 4 / 3;
+    }
+    .work-thumb img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+      transition: transform .55s var(--ease);
+    }
+    .work-card:hover .work-thumb img { transform: scale(1.04); }
+    .work-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .35s var(--ease);
+    }
+    .work-card:hover .work-thumb-overlay { background: rgba(0,0,0,.18); }
+    .work-thumb-overlay span {
+      font-size: 14px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #fff;
+      opacity: 0;
+      transition: opacity .3s var(--ease);
+    }
+    .work-card:hover .work-thumb-overlay span { opacity: 1; }
+
+    .work-meta { margin-top: 14px; }
+    .work-title { font-size: 22px; font-weight: 400; }
+    .work-tag {
+      font-size: 13px;
+      color: #888;
+      font-family: "Inter", sans-serif;
+      margin-top: 4px;
+    }
+
+    .pre-footer {
+      position: relative;
+      z-index: 2;
+      margin-top: 2px;
+      padding-top: 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .birds-row {
+      width: min(100%, 1112px);
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .home-pill {
+      border: 2px solid #000;
+      border-radius: 35px;
+      padding: 16px 36px;
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #000;
+      text-decoration: none;
+      line-height: 1;
+      background: transparent;
+      transition: background .2s, color .2s;
+    }
+    .home-pill:hover { background: #000; color: #fff; }
+
+    footer {
+      position: relative;
+      z-index: 2;
+      left: 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+      margin-top: 32px;
+      background: var(--blue);
+      padding: 40px 32px 30px;
+      color: #fff;
+      text-align: center;
+      font-family: "Inter", sans-serif;
+    }
+    .footer-name { font-size: 22px; margin-bottom: 5px; }
+    .footer-email { font-size: 20px; margin-bottom: 22px; }
+    .footer-icons { display: flex; justify-content: center; gap: 22px; margin-bottom: 30px; }
+    .footer-icons img { height: 36px; width: auto; display: block; }
+    .footer-copy { font-size: 20px; }
+    .footer-star { position: absolute; bottom: 26px; width: 86px; height: auto; }
+    .footer-star-l { left: 18px; }
+    .footer-star-r { right: 18px; }
+
+    @media (max-width: 1200px) {
+      nav { height: 90px; padding: 10px 24px; }
+      .nav-logo img { height: 64px; }
+      .nav-links { gap: 22px; }
+      .nav-links a { font-size: 18px; }
+      .page-content { padding-top: 120px; }
+      .page-header, .works-grid { padding-left: 24px; padding-right: 24px; }
+      .works-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-star { width: 58px; }
+    }
+    @media (max-width: 760px) {
+      .nav-links { display: none; }
+      .works-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="yaqi_logo.png" alt="Yaqi Han" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="publication.html">Publication</a></li>
+    <li><a href="design.html" class="active">Design</a></li>
+    <li><a href="illustration.html">Illustration</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+</nav>
+
+<main class="page-content">
+  <div class="page-header">
+    <h1>Design</h1>
+  </div>
+
+  <div class="works-grid">
+    <a class="work-card" href="design-vortex-ai-brand-design.html">
+      <div class="work-thumb">
+        <img src="design/Vortex AI Brand Design/cover.jpg" alt="Vortex AI Brand Design" />
+        <div class="work-thumb-overlay"><span>View project →</span></div>
+      </div>
+      <div class="work-meta">
+        <p class="work-title">Vortex AI Brand Design</p>
+        <p class="work-tag">Brand Identity · UI/UX Design · 2026</p>
+      </div>
+    </a>
+
+    <a class="work-card" href="design-duolingo-brief.html">
+      <div class="work-thumb">
+        <img src="design/Duolingo Brief/cover.jpg" alt="Duolingo Brief" />
+        <div class="work-thumb-overlay"><span>View project →</span></div>
+      </div>
+      <div class="work-meta">
+        <p class="work-title">Duolingo Brief</p>
+        <p class="work-tag">Marketing Design · 2026</p>
+      </div>
+    </a>
+
+    <a class="work-card" href="design-university-of-edinburgh-digital-safety.html">
+      <div class="work-thumb">
+        <img src="design/University of Edinburgh Intern/cover.png" alt="University of Edinburgh Digital Safety" />
+        <div class="work-thumb-overlay"><span>View project →</span></div>
+      </div>
+      <div class="work-meta">
+        <p class="work-title">University of Edinburgh - Digital Safety</p>
+        <p class="work-tag">Internship · Graphic Design · 2025</p>
+      </div>
+    </a>
+
+    <a class="work-card" href="design-addiction-awareness-poster.html">
+      <div class="work-thumb">
+        <img src="design/addiction poster/cover.png" alt="Addiction Awareness Poster" />
+        <div class="work-thumb-overlay"><span>View project →</span></div>
+      </div>
+      <div class="work-meta">
+        <p class="work-title">Addiction Awareness Poster</p>
+        <p class="work-tag">Poster Design · 2025</p>
+      </div>
+    </a>
+
+    <a class="work-card" href="design-bookmark-design.html">
+      <div class="work-thumb">
+        <img src="design/bookmark/cover.png" alt="Bookmark Design" />
+        <div class="work-thumb-overlay"><span>View project →</span></div>
+      </div>
+      <div class="work-meta">
+        <p class="work-title">BookMarks 2025</p>
+        <p class="work-tag">Brand Design · 2025</p>
+      </div>
+    </a>
+
+    <a class="work-card" href="design-tencent-intern.html">
+      <div class="work-thumb">
+        <img src="design/tencent intern/cover.png" alt="Tencent Intern" />
+        <div class="work-thumb-overlay"><span>View project →</span></div>
+      </div>
+      <div class="work-meta">
+        <p class="work-title">Tencent Intern</p>
+        <p class="work-tag">Internship · UI/UX Design · 2024</p>
+      </div>
+    </a>
+  </div>
+</main>
+
+<div class="pre-footer">
+  <div class="birds-row">
+    <a class="home-pill" href="index.html">Home</a>
+  </div>
+</div>
+
+<footer>
+  <img class="footer-star footer-star-l" src="https://www.figma.com/api/mcp/asset/cdf2e201-448f-487b-8051-49a7ee6bdd62" alt="" />
+  <p class="footer-name">Yaqi Han</p>
+  <p class="footer-email">yaqihan04@gmail.com</p>
+  <div class="footer-icons">
+    <a href="https://instagram.com" target="_blank" rel="noopener"><img src="footer/instagram.png" alt="Instagram" /></a>
+    <a href="mailto:yaqihan04@gmail.com"><img src="footer/email.png" alt="Email" /></a>
+  </div>
+  <p class="footer-copy">Yaqi Han 2026 ©</p>
+  <img class="footer-star footer-star-r" src="https://www.figma.com/api/mcp/asset/cdf2e201-448f-487b-8051-49a7ee6bdd62" alt="" />
+</footer>
+
+</div>
+</body>
+</html>

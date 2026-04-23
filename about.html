@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Yaqi Han</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --pink: #d30b76;
+      --blue: #1282fe;
+      --ink: #000;
+      --bg: #e6e4e2;
+      --ease: cubic-bezier(.4, 0, .2, 1);
+    }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Futura, "Avenir Next", "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: min(100%, 1728px);
+      min-height: 100vh;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    nav {
+      height: 110px;
+      padding: 12px 40px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; right: 0; width: 100%;
+      z-index: 999;
+      background: rgba(230, 228, 226, 0.94);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    .nav-logo img { height: 85px; width: auto; display: block; }
+    .nav-links { margin-left: auto; list-style: none; display: flex; gap: 44px; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      transition: color .2s;
+    }
+    .nav-links a.active, .nav-links a:hover { color: var(--pink); }
+
+    .about-page {
+      min-height: calc(100vh - 110px);
+      padding: 150px 64px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: minmax(420px, 0.95fr) minmax(440px, 0.85fr);
+      gap: clamp(70px, 10vw, 180px);
+      align-items: start;
+      position: relative;
+      z-index: 2;
+    }
+
+    .about-left {
+      position: relative;
+      padding-top: 24px;
+      max-width: 760px;
+    }
+    .about-label {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 22px;
+    }
+    .name-wrap {
+      position: relative;
+      width: max-content;
+      margin-bottom: 34px;
+    }
+    .about-shadow {
+      position: absolute;
+      left: 130px;
+      top: 22px;
+      width: 360px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .about-name {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(54px, 5vw, 86px);
+      font-weight: 800;
+      letter-spacing: -3px;
+      line-height: 0.92;
+    }
+    .about-name span {
+      color: var(--pink);
+      font-style: italic;
+    }
+    .about-bio {
+      max-width: 680px;
+      font-family: "Inter", sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: #444;
+    }
+    .about-bio p + p { margin-top: 26px; }
+
+    .about-contact {
+      margin-top: 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+    .contact-title {
+      color: var(--blue);
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 30px;
+    }
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .contact-item + .contact-item { margin-top: 22px; }
+    .contact-label {
+      color: var(--pink);
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--pink);
+      padding-bottom: 2px;
+    }
+    .about-contact a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 3px;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.2;
+      transition: color .2s, border-color .2s;
+    }
+    .about-contact a:hover {
+      color: var(--pink);
+      border-color: var(--pink);
+    }
+
+    .about-right {
+      position: relative;
+      justify-self: center;
+      width: min(100%, 500px);
+      padding-top: 72px;
+    }
+    .portrait-shadow {
+      position: absolute;
+      right: -34px;
+      bottom: -38px;
+      width: 92%;
+      height: 92%;
+      border-radius: 0 46px 46px 46px;
+      background: #dfeaf0;
+      z-index: 0;
+    }
+    .about-portrait {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      aspect-ratio: 0.86 / 1;
+      overflow: hidden;
+      border-radius: 0 34px 34px 34px;
+      background: #e8e8e8;
+    }
+    .about-portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 44%;
+      display: block;
+    }
+    .star {
+      position: absolute;
+      z-index: 3;
+      width: 78px;
+      pointer-events: none;
+    }
+    .star-one { top: -2px; left: -26px; transform: rotate(-10deg); }
+    .star-two { top: 44px; left: 42px; width: 56px; transform: rotate(12deg); }
+    .about-bird {
+      position: absolute;
+      right: -84px;
+      bottom: -100px;
+      width: 214px;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    footer {
+      position: relative;
+      z-index: 2;
+      left: 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+      margin-top: 0;
+      background: var(--blue);
+      padding: 40px 32px 30px;
+      color: #fff;
+      text-align: center;
+      font-family: "Inter", sans-serif;
+    }
+    .footer-name { font-size: 22px; margin-bottom: 5px; }
+    .footer-email { font-size: 20px; margin-bottom: 22px; }
+    .footer-icons { display: flex; justify-content: center; gap: 22px; margin-bottom: 30px; }
+    .footer-icons img { height: 36px; width: auto; display: block; }
+    .footer-copy { font-size: 20px; }
+
+    @media (max-width: 1200px) {
+      nav { height: 90px; padding: 14px 24px; }
+      .nav-logo img { height: 56px; width: auto; }
+      .nav-links { gap: 22px; }
+      .nav-links a { font-size: 18px; }
+      .about-page { padding: 124px 24px 70px; }
+      .about-grid { gap: 54px; grid-template-columns: 1fr 0.8fr; }
+      .about-shadow { width: 270px; left: 110px; }
+      .contact-title { font-size: 44px; }
+      .about-right { padding-top: 66px; }
+    }
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .about-right { width: min(100%, 480px); justify-self: start; }
+      .about-bird { right: -38px; bottom: -70px; width: 150px; }
+    }
+    @media (max-width: 760px) {
+      .nav-links { display: none; }
+      .about-page { padding: 112px 20px 50px; }
+      .about-bio { font-size: 16px; }
+      .about-contact a { font-size: 17px; }
+      .contact-title { font-size: 38px; margin-bottom: 24px; }
+      .about-shadow { width: 220px; left: 86px; top: 18px; }
+      .star-one { width: 58px; left: -16px; }
+      .star-two { width: 44px; left: 34px; top: 32px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <img src="yaqi_logo.png" alt="Yaqi Han" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="publication.html">Publication</a></li>
+      <li><a href="design.html">Design</a></li>
+      <li><a href="illustration.html">Illustration</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="about-page">
+    <div class="about-grid">
+      <section class="about-left">
+        <p class="about-label">About</p>
+        <div class="name-wrap">
+          <img class="about-shadow" src="about/shadow.png" alt="" />
+          <h1 class="about-name">Yaqi<br><span>Han</span></h1>
+        </div>
+        <div class="about-bio">
+          <p>
+            Yaqi Han is an illustrator and graphic designer based in Edinburgh, originally from Beijing. Her practice spans graphic novel, branding, digital design, and editorial illustration, with a focus on visual storytelling, emotion, and the quiet details of everyday life. Working across both personal and client-led projects, she creates thoughtful, playful visuals that balance narrative sensitivity with clear communication.
+          </p>
+          <p>
+            Her recent work includes projects for the University of Edinburgh, Tencent Video, and Vortex Game AI, as well as selected work presented through Secret 7”, the Edinburgh International Book Festival, and other exhibition contexts.
+          </p>
+        </div>
+        <div class="about-contact">
+          <h2 class="contact-title">Contact</h2>
+          <div class="contact-item">
+            <span class="contact-label">Email</span>
+            <a href="mailto:yaqihan04@gmail.com">yaqihan04@gmail.com →</a>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">Instagram</span>
+            <a href="https://www.instagram.com/chiaseed.han/" target="_blank" rel="noopener noreferrer">@chiaseed.han →</a>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">xiaohongshu</span>
+            <a href="https://www.xiaohongshu.com/user/profile/63339078000000002303baf8?tab=note&amp;subTab=note" target="_blank" rel="noopener noreferrer">@砂糖桔不耐受 →</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-right" aria-label="Portrait">
+        <div class="portrait-shadow"></div>
+        <img class="star star-one" src="about/star.png" alt="" />
+        <img class="star star-two" src="about/star.png" alt="" />
+        <div class="about-portrait">
+          <img src="about/yaqi photo.png" alt="Yaqi Han" />
+        </div>
+        <img class="about-bird" src="about/bird.png" alt="" />
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p class="footer-name">Yaqi Han</p>
+    <p class="footer-email">yaqihan04@gmail.com</p>
+    <div class="footer-icons">
+      <a href="https://instagram.com" target="_blank" rel="noopener">
+        <img src="footer/instagram.png" alt="Instagram" />
+      </a>
+      <a href="mailto:yaqihan04@gmail.com">
+        <img src="footer/email.png" alt="Email" />
+      </a>
+    </div>
+    <p class="footer-copy">Yaqi Han 2026 ©</p>
+  </footer>
+</div>
+</body>
+</html>

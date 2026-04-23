@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Illustration — Yaqi Han</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --pink: #d30b76;
+      --blue: #1282fe;
+      --ink: #000;
+      --bg: #e6e4e2;
+      --ease: cubic-bezier(.4, 0, .2, 1);
+    }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Futura, "Avenir Next", "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img[src*="figma.com/api/mcp/asset"] { display: none !important; }
+
+    .page { width: min(100%, 1728px); margin: 0 auto; position: relative; }
+
+    nav {
+      height: 110px;
+      padding: 12px 40px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; right: 0; width: 100%;
+      z-index: 999;
+      background: rgba(230, 228, 226, 0.94);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    .nav-logo img { height: 85px; width: auto; display: block; }
+    .nav-links { margin-left: auto; list-style: none; display: flex; gap: 44px; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      transition: color .2s;
+    }
+    .nav-links a.active, .nav-links a:hover { color: var(--pink); }
+
+    .page-content {
+      padding-top: 140px;
+      min-height: 80vh;
+      position: relative;
+      z-index: 2;
+    }
+
+    .page-header { padding: 0 64px 48px; }
+    .page-header h1 {
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1;
+      color: var(--blue);
+    }
+
+    .illus-grid {
+      padding: 0 64px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 28px;
+      row-gap: 28px;
+      grid-auto-rows: 8px;
+      align-items: start;
+    }
+    .work-card {
+      display: block;
+      text-decoration: none;
+      color: var(--ink);
+      cursor: pointer;
+      align-self: start;
+    }
+    .work-thumb {
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      background: #d8d6d4;
+    }
+    .work-thumb img {
+      width: 100%;
+      display: block;
+      transition: transform .55s var(--ease);
+    }
+    .work-card:hover .work-thumb img { transform: scale(1.04); }
+    .work-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .35s var(--ease);
+    }
+    .work-card:hover .work-thumb-overlay { background: rgba(0,0,0,.18); }
+    .work-thumb-overlay span {
+      font-size: 14px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #fff;
+      opacity: 0;
+      transition: opacity .3s var(--ease);
+    }
+    .work-card:hover .work-thumb-overlay span { opacity: 1; }
+    .work-meta { margin-top: 14px; }
+    .work-title {
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.25;
+    }
+    .work-tag {
+      font-size: 13px;
+      color: #888;
+      font-family: 'Inter', sans-serif;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      z-index: 1200;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 80px 24px 60px;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .35s var(--ease), visibility .35s;
+    }
+    .modal-backdrop.open { opacity: 1; visibility: visible; }
+    .modal {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 720px;
+      width: 100%;
+      padding: 48px 48px 56px;
+      position: relative;
+      transform: translateY(24px);
+      transition: transform .35s var(--ease);
+    }
+    .modal-backdrop.open .modal { transform: translateY(0); }
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 24px;
+      font-size: 30px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--ink);
+      line-height: 1;
+      transition: color .2s;
+    }
+    .modal-close:hover { color: var(--pink); }
+    .modal-title {
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -.5px;
+      margin-bottom: 8px;
+    }
+    .modal-tag {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 24px;
+    }
+    .modal-tag.has-desc {
+      margin-bottom: 18px;
+    }
+    .modal-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: #444;
+      margin-bottom: 32px;
+    }
+    .modal-images {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .modal-images img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+      background: #f0f0f0;
+    }
+
+    .pre-footer {
+      position: relative;
+      z-index: 2;
+      margin-top: 2px;
+      padding-top: 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .birds-row {
+      width: min(100%, 1112px);
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .home-pill {
+      border: 2px solid #000;
+      border-radius: 35px;
+      padding: 16px 36px;
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #000;
+      text-decoration: none;
+      line-height: 1;
+      background: transparent;
+      transition: background .2s, color .2s;
+    }
+    .home-pill:hover { background: #000; color: #fff; }
+
+    footer {
+      position: relative;
+      z-index: 2;
+      left: 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+      margin-top: 32px;
+      background: var(--blue);
+      padding: 40px 32px 30px;
+      color: #fff;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+    .footer-name { font-size: 22px; margin-bottom: 5px; }
+    .footer-email { font-size: 20px; margin-bottom: 22px; }
+    .footer-icons { display: flex; justify-content: center; gap: 22px; margin-bottom: 30px; }
+    .footer-icons img { height: 36px; width: auto; display: block; }
+    .footer-copy { font-size: 20px; }
+    .footer-star { position: absolute; bottom: 26px; width: 86px; height: auto; }
+    .footer-star-l { left: 18px; }
+    .footer-star-r { right: 18px; }
+
+    @media (max-width: 1200px) {
+      nav { height: 90px; padding: 10px 24px; }
+      .nav-logo img { height: 64px; }
+      .nav-links { gap: 22px; }
+      .nav-links a { font-size: 18px; }
+      .page-content { padding-top: 120px; }
+      .page-header, .illus-grid { padding-left: 24px; padding-right: 24px; }
+      .illus-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .modal { padding: 32px 24px 40px; }
+      .footer-star { width: 58px; }
+    }
+    @media (max-width: 760px) {
+      .nav-links { display: none; }
+      .illus-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="yaqi_logo.png" alt="Yaqi Han" />
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="publication.html">Publication</a></li>
+    <li><a href="design.html">Design</a></li>
+    <li><a href="illustration.html" class="active">Illustration</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+</nav>
+
+<main class="page-content">
+  <div class="page-header">
+    <h1>Illustration</h1>
+  </div>
+
+  <div class="illus-grid" id="illustration-grid"></div>
+</main>
+
+<div class="pre-footer">
+  <div class="birds-row">
+    <a class="home-pill" href="index.html">Home</a>
+  </div>
+</div>
+
+<footer>
+  <img class="footer-star footer-star-l" src="https://www.figma.com/api/mcp/asset/cdf2e201-448f-487b-8051-49a7ee6bdd62" alt="" />
+  <p class="footer-name">Yaqi Han</p>
+  <p class="footer-email">yaqihan04@gmail.com</p>
+  <div class="footer-icons">
+    <a href="https://instagram.com" target="_blank" rel="noopener"><img src="footer/instagram.png" alt="Instagram" /></a>
+    <a href="mailto:yaqihan04@gmail.com"><img src="footer/email.png" alt="Email" /></a>
+  </div>
+  <p class="footer-copy">Yaqi Han 2026 ©</p>
+  <img class="footer-star footer-star-r" src="https://www.figma.com/api/mcp/asset/cdf2e201-448f-487b-8051-49a7ee6bdd62" alt="" />
+</footer>
+
+<div id="modal-root"></div>
+
+<script>
+  const works = [
+    {
+      id: "picture-this",
+      title: "Picture This: Becoming Oward Migrant Parents",
+      tag: "Commissioned · Editorial Illustration",
+      description: "A series of editorial illustrations commissioned by a PhD candidate at Maastricht University. The illustrations explore the core idea of onward migration as an everyday, embodied experience shaped by the broader journey of life. Created for flexible use, they can be adapted across a variety of formats and contexts.",
+      thumb: "illustration/2026 picture this/cover.png",
+      images: [
+        "illustration/2026 picture this/cover.png",
+        "illustration/2026 picture this/illustration 2.png"
+      ]
+    },
+    {
+      id: "life-as-film",
+      title: "Life As a Film",
+      tag: "Illustration Series",
+      description: "A personal illustration series that frames everyday memory through the language of cinema. The works use staged light, emotional close-ups, and stillness to turn small moments into fragments that feel like scenes from a film.",
+      thumb: "illustration/2026 life as film/cover.png",
+      images: [
+        "illustration/2026 life as film/cover.png",
+        "illustration/2026 life as film/afraid.png",
+        "illustration/2026 life as film/friend.png",
+        "illustration/2026 life as film/horse.png"
+      ]
+    },
+    {
+      id: "pentland-hill",
+      title: "Pentland Hill Activity Sheet",
+      tag: "Activity Sheet",
+      description: "An illustrated activity sheet designed for children exploring Pentland Hill. The project combines playful drawing, map-like thinking, and print layout to make outdoor learning feel inviting for families and younger audiences.",
+      thumb: "illustration/2025pentland hill/cover.JPG",
+      images: [
+        "illustration/2025pentland hill/cover.JPG",
+        "illustration/2025pentland hill/DSCF7642 1.png",
+        "illustration/2025pentland hill/pentland hills activity sheet.jpg",
+        "illustration/2025pentland hill/front.jpg"
+      ]
+    },
+    {
+      id: "learning-technology-ecosystem",
+      title: "Learning Technology Ecosystem",
+      tag: "Internship · Vector Illustration",
+      description: "A set of vector illustrations created to explain the University of Edinburgh's learning technology ecosystem. The project uses consistent visual language, modular scenes, and approachable characters to make digital education services easier to understand.",
+      thumb: "illustration/2025Learning Technology Ecosystem/cover.png",
+      images: [
+        "illustration/2025Learning Technology Ecosystem/cover.png",
+        "illustration/2025Learning Technology Ecosystem/Accessibility.png",
+        "illustration/2025Learning Technology Ecosystem/Assessment and Feedback Technologies.png",
+        "illustration/2025Learning Technology Ecosystem/Assessment and Teachning Technologies.png",
+        "illustration/2025Learning Technology Ecosystem/Learning Design.png",
+        "illustration/2025Learning Technology Ecosystem/Learning and Teaching Technologies.png",
+        "illustration/2025Learning Technology Ecosystem/Online Course Production.png",
+        "illustration/2025Learning Technology Ecosystem/VLE Excellence.png",
+        "illustration/2025Learning Technology Ecosystem/ecosystem ppt GK edit (dragged).png"
+      ]
+    },
+    {
+      id: "bring-them-home",
+      title: "Bring Them Home",
+      tag: "Campaign Illustration",
+      description: "A campaign developed with IJM to address human trafficking in Europe through bus wrap design. By bringing the presence of victims into familiar public spaces, the project seeks to increase visibility, provoke reflection, and encourage greater public support for anti-trafficking efforts.",
+      thumb: "illustration/2025Bring Them Home/cover.png",
+      images: [
+        "illustration/2025Bring Them Home/cover.png",
+        "illustration/2025Bring Them Home/rightbottom.png",
+        "illustration/2025Bring Them Home/right1.png",
+        "illustration/2025Bring Them Home/1.png",
+        "illustration/2025Bring Them Home/2.png"
+      ]
+    },
+    {
+      id: "digital-safety-illu-set",
+      title: "Digital Safety Illustration Set",
+      tag: "Internship · Vector Illustration",
+      description: "A set of 12 vector illustrations created for the University of Edinburgh as client work, designed as banner visuals for the university’s digital safety webpages. The project aimed to communicate topics around online security in a clear, accessible, and engaging way, using a cohesive visual language adapted for web use.",
+      thumb: "illustration/2025Digital Safety Illu Set/cover.png",
+      images: [
+        "illustration/2025Digital Safety Illu Set/cover.png",
+        "illustration/2025Digital Safety Illu Set/Definitions and Background.png",
+        "illustration/2025Digital Safety Illu Set/Expectations for Students.png",
+        "illustration/2025Digital Safety Illu Set/Fraud Awareness Resources.png",
+        "illustration/2025Digital Safety Illu Set/Must Read Information for New Students.png",
+        "illustration/2025Digital Safety Illu Set/Need Help with Your Digital Safety.png",
+        "illustration/2025Digital Safety Illu Set/Online Safety for Students with Disabilities(2).png",
+        "illustration/2025Digital Safety Illu Set/The Digital Safety Supporter Toolkit.png",
+        "illustration/2025Digital Safety Illu Set/Training and Events-01.png",
+        "illustration/2025Digital Safety Illu Set/general safer internet resources.png",
+        "illustration/2025Digital Safety Illu Set/staying safe while learning and teaching online.png"
+      ]
+    },
+    {
+      id: "red-rabbit",
+      title: "Red Rabbit",
+      tag: "Digital Illustration",
+      thumb: "illustration/2026red rabbit.jpg",
+      images: ["illustration/2026red rabbit.jpg"]
+    },
+    {
+      id: "music-trip",
+      title: "Music Trip",
+      tag: "Art Book",
+      description: "A conceptual music album that explores how music becomes a vehicle for travel — not through physical landscapes, but through inner, emotional, and imagined ones. It reflects on the idea that when we listen to music, we momentarily leave our current space and enter a state of drifting — a mind trip — arriving at places both real and abstract.",
+      thumb: "illustration/2025Music Trip/cover.JPG",
+      images: [
+        "illustration/2025Music Trip/cover.JPG",
+        "illustration/2025Music Trip/DSCF7645.JPG",
+        "illustration/2025Music Trip/DSCF7648.JPG",
+        "illustration/2025Music Trip/Frame 17.png",
+        "illustration/2025Music Trip/Frame 19.png",
+        "illustration/2025Music Trip/Frame 20.png",
+        "illustration/2025Music Trip/Frame 21.png"
+      ]
+    },
+    {
+      id: "secret-7",
+      title: "Secret 7'': Merchants Of Paradise",
+      tag: "Album Design",
+      description: "Selected for War Child presents Secret 7” 2025, this record-sleeve illustration was created in response to the open call for Gregory Porter's Merchants of Paradise. The artwork interprets the mood of the track through symbolic forms, layered texture, and a compact visual rhythm shaped for album-cover format. As part of Secret 7”, the piece became one of 700 anonymous, one-off sleeves produced for the charity auction in support of War Child.",
+      thumb: "illustration/secret 7/cover.png",
+      images: ["illustration/secret 7/cover.png"]
+    },
+    {
+      id: "mountain-and-sea",
+      title: "Mountain and Sea",
+      tag: "Digital Illustration",
+      thumb: "illustration/2026mountain and sea.jpg",
+      images: ["illustration/2026mountain and sea.jpg"]
+    },
+    {
+      id: "twin-howard",
+      title: "Twin Howard",
+      tag: "Commissioned · Editorial Illustration",
+      description: "An editorial illustration developed in response to a selected story about Twin Howard and the intense day before birth. Through expressive distortion and carefully observed narrative detail, the composition transforms an unusual personal account into a vivid visual interpretation. The work was later presented at the Edinburgh International Book Festival 2025.",
+      thumb: "illustration/Twin Howard recounts his in-utero rollercoaster day at Simpsons.png",
+      images: ["illustration/Twin Howard recounts his in-utero rollercoaster day at Simpsons.png"]
+    },
+    {
+      id: "walkablecity-yaqihan",
+      title: "Walkable City",
+      tag: "Editorial Illustration",
+      description: "An editorial illustration and accompanying article examining how Edinburgh's built environment contributes to its identity as a walkable city. The project looks at how the city’s layout, architectural fabric, and pedestrian routes shape everyday movement, accessibility, and the overall experience of walking through urban space.",
+      thumb: "illustration/2024walkablecity_yaqihan.jpg",
+      images: ["illustration/2024walkablecity_yaqihan.jpg"]
+    },
+    {
+      id: "daydreaming",
+      title: "DayDreaming",
+      tag: "Digital Illustration",
+      thumb: "illustration/2024DayDreaming.png",
+      images: ["illustration/2024DayDreaming.png"]
+    },
+    {
+      id: "drink-the-city",
+      title: "Drink The City",
+      tag: "Digital Illustration",
+      thumb: "illustration/2025Drink The City.png",
+      images: ["illustration/2025Drink The City.png"]
+    },
+    {
+      id: "paper-love",
+      title: "Paper Love",
+      tag: "Digital Illustration",
+      thumb: "illustration/2025paper love.jpg",
+      images: ["illustration/2025paper love.jpg"]
+    },
+    {
+      id: "p4r",
+      title: "In the End",
+      tag: "Digital Illustration",
+      thumb: "illustration/2025p4r.jpg",
+      images: ["illustration/2025p4r.jpg"]
+    },
+    {
+      id: "game",
+      title: "Game",
+      tag: "Digital Illustration",
+      thumb: "illustration/2024Game.png",
+      images: ["illustration/2024Game.png"]
+    },
+    {
+      id: "ignorant",
+      title: "Ignorant",
+      tag: "Digital Illustration",
+      thumb: "illustration/2026ignorant.jpg",
+      images: ["illustration/2026ignorant.jpg"]
+    },
+    {
+      id: "babet",
+      title: "Tower of Babel",
+      tag: "Digital Illustration",
+      thumb: "illustration/2024babet.jpg",
+      images: ["illustration/2024babet.jpg"]
+    },
+    {
+      id: "fall-in-water",
+      title: "Fall",
+      tag: "Digital Illustration",
+      thumb: "illustration/2024fall in water.jpg",
+      images: ["illustration/2024fall in water.jpg"]
+    },
+    {
+      id: "lightning",
+      title: "Lightning",
+      tag: "Digital Illustration",
+      thumb: "illustration/2024lightning.jpg",
+      images: ["illustration/2024lightning.jpg"]
+    },
+    {
+      id: "lord-of-the-flies",
+      title: "Lord of the Flies",
+      tag: "Book Cover Design",
+      thumb: "illustration/2024lord of the flies.jpg",
+      images: ["illustration/2024lord of the flies.jpg"]
+    },
+    {
+      id: "sick",
+      title: "Feel Sick",
+      tag: "Digital Illustration",
+      thumb: "illustration/2024sick.jpg",
+      images: ["illustration/2024sick.jpg"]
+    },
+    {
+      id: "Sitting",
+      title: "Sitting",
+      tag: "Digital Illustration",
+      thumb: "illustration/2024sitting.jpg",
+      images: ["illustration/2024sitting.jpg"]
+    },
+    {
+      id: "stand-watch",
+      title: "Rabbit Hole",
+      tag: "Digital Illustration",
+      thumb: "illustration/2024stand watch.jpg",
+      images: ["illustration/2024stand watch.jpg"]
+    },
+    {
+      id: "drunk",
+      title: "Drunk Dead",
+      tag: "Digital Illustration",
+      thumb: "illustration/2023drunk.jpg",
+      images: ["illustration/2023drunk.jpg"]
+    },
+    {
+      id: "horroble",
+      title: "Father and Son",
+      tag: "Book Chapter Illustration",
+      thumb: "illustration/2023horroble.jpg",
+      images: ["illustration/2023horroble.jpg"]
+    },
+    {
+      id: "i-lie",
+      title: "I Lie",
+      tag: "Digital Illustration",
+      thumb: "illustration/2023i lie.jpg",
+      images: ["illustration/2023i lie.jpg"]
+    },
+    {
+      id: "music-life",
+      title: "Objects",
+      tag: "Illustration Series",
+      thumb: "illustration/2023music life/cover.jpg",
+      images: [
+        "illustration/2023music life/cover.jpg",
+        "illustration/2023music life/blue.jpg"
+      ]
+    },
+    {
+      id: "orange",
+      title: "Orange in the Eye",
+      tag: "Digital Illustration",
+      thumb: "illustration/2023orange.jpg",
+      images: ["illustration/2023orange.jpg"]
+    },
+    {
+      id: "pray",
+      title: "Pray",
+      tag: "Digital Illustration",
+      thumb: "illustration/2023pray.jpg",
+      images: ["illustration/2023pray.jpg"]
+    },
+    {
+      id: "telephone",
+      title: "Telephone",
+      tag: "Digital Illustration",
+      thumb: "illustration/2023telephone.jpg",
+      images: ["illustration/2023telephone.jpg"]
+    },
+    {
+      id: "young-me",
+      title: "Don't Let Me Down",
+      tag: "Digital Illustration",
+      thumb: "illustration/2023young me.jpg",
+      images: ["illustration/2023young me.jpg"]
+    },
+    {
+      id: "cant-eat",
+      title: "Can't Eat",
+      tag: "Digital Illustration",
+      thumb: "illustration/2022can't eat.jpg",
+      images: ["illustration/2022can't eat.jpg"]
+    },
+    {
+      id: "pencil-skit",
+      title: "Pencil Skirt",
+      tag: "Digital Illustration",
+      thumb: "illustration/2022pencil skit.jpg",
+      images: ["illustration/2022pencil skit.jpg"]
+    },
+    {
+      id: "eva",
+      title: "Rei",
+      tag: "Digital Illustration",
+      thumb: "illustration/2022eva.jpg",
+      images: ["illustration/2022eva.jpg"]
+    }
+  ];
+
+  const grid = document.getElementById("illustration-grid");
+  const modalRoot = document.getElementById("modal-root");
+
+  function createCard(work) {
+    const card = document.createElement("a");
+    card.className = "work-card";
+    card.href = "#";
+    card.addEventListener("click", (event) => {
+      event.preventDefault();
+      openModal(work.id);
+    });
+
+    card.innerHTML = `
+      <div class="work-thumb">
+        <img src="${work.thumb}" alt="${work.title}" />
+        <div class="work-thumb-overlay"><span>View project →</span></div>
+      </div>
+      <div class="work-meta">
+        <p class="work-title">${work.title}</p>
+        <p class="work-tag">${work.tag || "Illustration"}</p>
+      </div>
+    `;
+
+    return card;
+  }
+
+  function createModal(work) {
+    const modal = document.createElement("div");
+    modal.className = "modal-backdrop";
+    modal.id = `modal-${work.id}`;
+    modal.innerHTML = `
+      <div class="modal">
+        <button class="modal-close" type="button" aria-label="Close">×</button>
+        <h2 class="modal-title">${work.title}</h2>
+        <p class="modal-tag${work.description ? " has-desc" : ""}">${work.tag || "Illustration"}</p>
+        ${work.description ? `<p class="modal-desc">${work.description}</p>` : ""}
+        <div class="modal-images">
+          ${work.images.map((src, index) => `<img src="${src}" alt="${work.title} ${index + 1}" />`).join("")}
+        </div>
+      </div>
+    `;
+
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) closeModal(work.id);
+    });
+    modal.querySelector(".modal-close").addEventListener("click", () => closeModal(work.id));
+
+    return modal;
+  }
+
+  function openModal(id) {
+    const modal = document.getElementById(`modal-${id}`);
+    if (!modal) return;
+    modal.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeModal(id) {
+    const modal = document.getElementById(`modal-${id}`);
+    if (!modal) return;
+    modal.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  works.forEach((work) => {
+    grid.appendChild(createCard(work));
+    modalRoot.appendChild(createModal(work));
+  });
+
+  function resizeGridItems() {
+    const gridStyles = window.getComputedStyle(grid);
+    const rowGap = parseFloat(gridStyles.getPropertyValue("row-gap"));
+    const autoRow = parseFloat(gridStyles.getPropertyValue("grid-auto-rows"));
+    if (!autoRow) return;
+
+    grid.querySelectorAll(".work-card").forEach((item) => {
+      const thumb = item.querySelector(".work-thumb");
+      const meta = item.querySelector(".work-meta");
+      const height = thumb.getBoundingClientRect().height + meta.getBoundingClientRect().height;
+      const span = Math.ceil((height + rowGap) / (autoRow + rowGap));
+      item.style.gridRowEnd = `span ${span}`;
+    });
+  }
+
+  function bindMasonry() {
+    const images = grid.querySelectorAll("img");
+    images.forEach((image) => {
+      if (image.complete) return;
+      image.addEventListener("load", resizeGridItems, { once: true });
+      image.addEventListener("error", resizeGridItems, { once: true });
+    });
+    resizeGridItems();
+  }
+
+  bindMasonry();
+  window.addEventListener("resize", resizeGridItems);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    document.querySelectorAll(".modal-backdrop.open").forEach((modal) => modal.classList.remove("open"));
+    document.body.style.overflow = "";
+  });
+</script>
+
+</div>
+</body>
+</html>

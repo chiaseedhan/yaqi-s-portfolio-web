@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yaqi Han</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink: #d30b76;
+      --blue: #1282fe;
+      --ink: #000;
+      --bg: #e6e4e2;
+      --ease: cubic-bezier(.4, 0, .2, 1);
+      --panels-overlay-offset: 460px;
+      --panel-height: 230px;
+      --panels-bottom-gap: 24px;
+      --panels-sticky-top: max(130px, calc(100vh - var(--panel-height) - var(--panels-bottom-gap)));
+      --panels-stop-distance: 680px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Futura, "Avenir Next", "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img[src*="figma.com/api/mcp/asset"] { display: none !important; }
+
+    .page {
+      width: min(100%, 1728px);
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .splash { position: absolute; pointer-events: none; z-index: 1; }
+    .splash-tr { top: 126px; right: -31px; width: 360px; }
+    .splash-ml { top: 860px; left: -60px; width: 360px; }
+
+    nav {
+      height: 110px;
+      padding: 12px 40px;
+      display: flex;
+      align-items: center;
+      position: fixed;
+      top: 0; left: 0; right: 0; width: 100%;
+      z-index: 999;
+      background: rgba(230, 228, 226, 0.94);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
+    .nav-logo img { height: 85px; width: auto; display: block; }
+    .nav-links { margin-left: auto; list-style: none; display: flex; gap: 44px; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      transition: color .2s;
+    }
+    .nav-links a.active,
+    .nav-links a:hover { color: var(--pink); }
+
+    .hero {
+      position: relative;
+      z-index: 2;
+      left: 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+      padding-top: 110px;
+    }
+    .hero-frame {
+      margin: 0;
+      width: 100vw;
+      height: calc(100vh - 110px);
+      min-height: 650px;
+      border-radius: 0;
+      overflow: hidden;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-frame img,
+    .hero-frame video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: top center;
+      display: block;
+    }
+
+    .panels-stage {
+      position: relative;
+      z-index: 3;
+      margin: calc(var(--panels-overlay-offset) * -1) 64px 0;
+    }
+
+    .panels-anchor {
+      min-height: var(--panels-stop-distance);
+    }
+
+    .panels {
+      position: sticky;
+      top: var(--panels-sticky-top);
+      z-index: 3;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .panel {
+      height: var(--panel-height);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      text-decoration: none;
+      color: #fff;
+      background: transparent;
+      display: block;
+    }
+    .panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      padding: 14px;
+      transition: transform .55s var(--ease), filter .3s ease;
+    }
+    .panel:hover img {
+      transform: scale(1.06);
+      filter: hue-rotate(110deg) saturate(0.9) brightness(0.8);
+    }
+
+    .pre-footer {
+      position: relative;
+      z-index: 2;
+      margin-top: 40px;
+      padding-top: 0;
+      display: flex;
+      justify-content: center;
+    }
+    .birds-row {
+      width: min(100%, 1112px);
+      min-height: 193px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+    .bird {
+      width: 246px;
+      height: auto;
+      display: block;
+    }
+    .bird-l { transform: rotate(-45deg) scaleY(-1); }
+    .bird-r { transform: rotate(-45deg); }
+    .home-pill {
+      margin: 0 18px;
+      border: 2px solid #000;
+      border-radius: 35px;
+      padding: 16px 36px;
+      font-size: 24px;
+      letter-spacing: 0.72px;
+      color: #000;
+      text-decoration: none;
+      line-height: 1;
+      background: transparent;
+      transition: background .2s, color .2s;
+    }
+    .home-pill:hover { background: #000; color: #fff; }
+
+    footer {
+      position: relative;
+      z-index: 2;
+      left: 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+      margin-top: 32px;
+      background: var(--blue);
+      height: 238px;
+      padding: 40px 32px 30px;
+      color: #fff;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+    }
+    .footer-name { font-size: 22px; margin-bottom: 5px; }
+    .footer-email { font-size: 20px; margin-bottom: 22px; }
+    .footer-icons { display: flex; justify-content: center; gap: 22px; margin-bottom: 30px; }
+    .footer-icons img { height: 36px; width: auto; display: block; }
+    .footer-copy { font-size: 20px; }
+    .footer-star { position: absolute; bottom: 26px; width: 86px; height: auto; }
+    .footer-star-l { left: 18px; }
+    .footer-star-r { right: 18px; }
+
+    @media (max-width: 1200px) {
+      nav { height: 90px; padding: 14px 24px; }
+      .nav-logo img { height: 56px; width: auto; }
+      .nav-links { gap: 22px; }
+      .nav-links a { font-size: 18px; }
+      .hero { padding-top: 90px; }
+      .hero-frame { height: calc(100vh - 90px); min-height: 520px; }
+      :root {
+        --panels-overlay-offset: 0px;
+        --panel-height: 280px;
+        --panels-sticky-top: auto;
+        --panels-stop-distance: auto;
+      }
+      .panels-stage { margin: 36px 24px 0; }
+      .panels-anchor { min-height: auto; }
+      .panels { position: relative; top: auto; grid-template-columns: 1fr; }
+      .panel { height: 280px; }
+      .splash { display: none; }
+      .birds-row { min-height: 124px; }
+      .bird { width: 130px; }
+      .home-pill { font-size: 18px; padding: 12px 26px; }
+      footer { margin-top: 16px; height: auto; padding-bottom: 38px; }
+      .footer-copy { font-size: 16px; }
+      .footer-star { width: 58px; }
+    }
+
+    @media (max-width: 760px) {
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <img class="splash splash-tr" src="https://www.figma.com/api/mcp/asset/36a40f17-1b5f-41dd-9c2f-f91a20d83c52" alt="" />
+    <img class="splash splash-ml" src="https://www.figma.com/api/mcp/asset/36a40f17-1b5f-41dd-9c2f-f91a20d83c52" alt="" />
+
+    <nav>
+      <a class="nav-logo" href="index.html">
+        <img src="yaqi_logo.png" alt="Yaqi Han" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="publication.html">Publication</a></li>
+        <li><a href="design.html">Design</a></li>
+        <li><a href="illustration.html">Illustration</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-frame">
+        <video autoplay muted loop playsinline preload="auto" aria-label="Homepage background video">
+          <source src="homepage background.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </section>
+
+    <section class="panels-stage">
+      <div class="panels-anchor">
+        <section class="panels">
+          <a class="panel" href="publication.html">
+            <img src="index block/publication.png" alt="Publication" />
+          </a>
+          <a class="panel" href="design.html">
+            <img src="index block/design.png" alt="Design" />
+          </a>
+          <a class="panel" href="illustration.html">
+            <img src="index block/illustration.png" alt="Illustration" />
+          </a>
+        </section>
+      </div>
+
+      <section class="pre-footer">
+        <div class="birds-row">
+          <img class="bird bird-l" src="https://www.figma.com/api/mcp/asset/65ae57e7-952a-49be-a213-137e85a91926" alt="" />
+          <a class="home-pill" href="index.html">Home</a>
+          <img class="bird bird-r" src="https://www.figma.com/api/mcp/asset/65ae57e7-952a-49be-a213-137e85a91926" alt="" />
+        </div>
+      </section>
+    </section>
+
+    <footer>
+      <img class="footer-star footer-star-l" src="https://www.figma.com/api/mcp/asset/cdf2e201-448f-487b-8051-49a7ee6bdd62" alt="" />
+      <p class="footer-name">Yaqi Han</p>
+      <p class="footer-email">yaqihan04@gmail.com</p>
+      <div class="footer-icons">
+        <a href="https://instagram.com" target="_blank" rel="noopener">
+          <img src="footer/instagram.png" alt="Instagram" />
+        </a>
+        <a href="mailto:yaqihan04@gmail.com">
+          <img src="footer/email.png" alt="Email" />
+        </a>
+      </div>
+      <p class="footer-copy">Yaqi Han 2026 ©</p>
+      <img class="footer-star footer-star-r" src="https://www.figma.com/api/mcp/asset/cdf2e201-448f-487b-8051-49a7ee6bdd62" alt="" />
+    </footer>
+  </div>
+</body>
+</html>
